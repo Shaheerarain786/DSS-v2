@@ -30,9 +30,9 @@ class OrganizationController extends Controller
         //
     }
 
-    public function store(Request $request, OrgnizationRequest $orgnizationRequest)
+    public function store(Request $request, OrgnizationRequest $organizationRequest)
     {
-        $org = Organization::create($request->all());
+        $org = Organization::query()->create($request->all());
 
         return redirect('organization')->with('success', 'Organization created Successfully');
     }
@@ -46,7 +46,7 @@ class OrganizationController extends Controller
 
     public function edit($id)
     {
-        $organization = Organization::findOrFail($id);
+        $organization = Organization::query()->findOrFail($id);
 
         return view('admin.organizations.edit',compact('organization'));
     }
@@ -54,7 +54,7 @@ class OrganizationController extends Controller
 
     public function update(Request $request, $id)
     {
-        $org = Organization::findOrFail($id);
+        $org = Organization::query()->findOrFail($id);
 
         $org->update($request->all());
 
@@ -64,7 +64,7 @@ class OrganizationController extends Controller
 
     public function destroy($id)
     {
-        Organization::findOrFail($id)->delete();
+        Organization::query()->findOrFail($id)->delete();
 
         return back()->with('success','Organization deleted successfully');
     }
@@ -75,11 +75,11 @@ class OrganizationController extends Controller
         $zoneIds = $request->zone_id;
 
         foreach($zoneIds as $zoneId){
-            Zone::where('id',$zoneId)->update([
+            Zone::query()->where('id',$zoneId)->update([
                 'organization_id' => $organizationId
             ]);
         }
 
-        return redirect('organization')->with('success','Succsess');
+        return redirect('organization')->with('success','Success');
     }
 }

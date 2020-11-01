@@ -20,16 +20,20 @@ class DeviceTemplateController extends Controller
         $templates = DeviceTemplateData::with(['device_templates', 'template_assets'])->get();
 
         foreach ($templates as $template) {
-            $template->images = DeviceTemplateAsssets::where('template_data_id', $template->id)->where('asset_type', 'image')->get();
-            $template->videos = DeviceTemplateAsssets::where('template_data_id', $template->id)->where('asset_type', 'video')->get();
+            $template->images = DeviceTemplateAsssets::query()
+                ->where('template_data_id', $template->id)->where('asset_type', 'image')->get();
+
+            $template->videos = DeviceTemplateAsssets::query()
+                ->where('template_data_id', $template->id)->where('asset_type', 'video')->get();
         }
-//        dd($templates);
+
         return view('admin.device_templates.index', compact('templates'));
     }
 
     public function create()
     {
         $devices = Device::all();
+
         return view('admin.device_templates.set_teamplate', compact('devices'));
     }
 
@@ -57,7 +61,7 @@ class DeviceTemplateController extends Controller
 
         $templateId = $request->template_id;
 
-        $template = DeviceTemplates::find($templateId);
+        $template = DeviceTemplates::query()->find($templateId);
 
         $requiredImages = $template->images_required;
         $requiredVideos = $template->videos_required;
@@ -107,11 +111,6 @@ class DeviceTemplateController extends Controller
         return redirect('device-templates')->with('success', 'template set successfullly');
     }
 
-    public function edit_template($id)
-    {
-
-    }
-
     public function update($id, Request $request)
     {
 
@@ -119,7 +118,7 @@ class DeviceTemplateController extends Controller
 
     public function delete_template($id)
     {
-        $template_data = DeviceTemplateData::findOrFail($id);
+        $template_data = DeviceTemplateData::query()->findOrFail($id);
 
         $template_data->template_assets()->delete();
 
@@ -130,9 +129,10 @@ class DeviceTemplateController extends Controller
 
     public function validateFields($startDate, $endDate, $deviceId)
     {
-        dd("here");
-        $validation = ScheduleTemplates::whereBetween('start_date', [$startDate, $endDate])
+        $validation = ScheduleTemplates::query()
+            ->whereBetween('start_date', [$startDate, $endDate])
             ->orWhereBetween('end_date', [$startDate, $endDate])->count();
+
         if ($validation > 1) {
             return false;
         } else {

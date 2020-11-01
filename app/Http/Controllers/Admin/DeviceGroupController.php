@@ -14,7 +14,7 @@ class DeviceGroupController extends Controller
 
     public function index()
     {
-        $deviceGroups = DeviceGroup::with('devices')->get();
+        $deviceGroups = DeviceGroup::query()->with('devices')->get();
 
         $devices = Device::all();
 
@@ -23,7 +23,7 @@ class DeviceGroupController extends Controller
 
     public function store(Request $request)
     {
-        DeviceGroup::create($request->only('name'));
+        DeviceGroup::query()->create($request->only('name'));
 
         return redirect('device-group')->with('success','Device Group created successfully');
     }
@@ -36,7 +36,7 @@ class DeviceGroupController extends Controller
 
     public function update(Request $request, $id)
     {
-        $devieGroup = DeviceGroup::findOrFail($id);
+        $devieGroup = DeviceGroup::query()->findOrFail($id);
 
         $devieGroup->update($request->only('name'));
 

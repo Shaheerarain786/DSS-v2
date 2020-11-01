@@ -16,7 +16,7 @@ class DeviceController extends Controller
 {
     public function index()
     {
-        $devices = Device::with('branches')->get();
+        $devices = Device::query()->with('branches')->get();
 
         return view('admin.devices.index', compact('devices'));
     }
@@ -43,7 +43,7 @@ class DeviceController extends Controller
 
     public function edit($id)
     {
-        $devices = Device::findOrFail($id);
+        $devices = Device::query()->findOrFail($id);
 
         return view('admin.devices.edit', compact('devices'));
     }
@@ -51,7 +51,7 @@ class DeviceController extends Controller
 
     public function update(Request $request, $id)
     {
-        $device = Device::findOrFail($id);
+        $device = Device::query()->findOrFail($id);
 
         $device->update($request->all());
 
@@ -60,7 +60,7 @@ class DeviceController extends Controller
 
     public function destroy($id)
     {
-        $device = Device::findOrFail($id)->delete();
+        $device = Device::query()->findOrFail($id)->delete();
 
         return redirect('devices')->with('Device Deleted Successfully');
     }

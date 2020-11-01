@@ -1,0 +1,28 @@
+{
+    "data": [
+        [
+            {
+                "url": "url1",
+                "type": "img"
+            },
+            {
+                "url": "url2",
+                "type": "img"
+            },
+            {
+                "url": "url3",
+                "type": "img"
+            }
+        ],
+        [
+            {
+                "url": "url1",
+                "type": "video"
+            },
+            {
+                "url": "url3",
+                "type": "video"
+            }
+        ]
+    ]
+}

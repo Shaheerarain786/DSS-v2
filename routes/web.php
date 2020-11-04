@@ -41,6 +41,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('logout', 'LoginController@logout')->name('logout');
     Route::post('ajax-delete-zones','Admin\ZoneController@ajax_delete_zones')->name('ajax-delete-zones');
     Route::post('ajax-next-device-template-setting','Admin\DeviceTemplateController@next_step')->name('next_step');
+
+     Route::get('get-cities/{zone_id}','Admin\ScheduleController@cities')->name('get_cities');
+    Route::get('get-brances/{city_id}','Admin\ScheduleController@branches')->name('get_brances');
+    Route::get('get-device-groups/{branch_id}','Admin\ScheduleController@deviceGroups')->name('get_device_groups');
+    Route::get('get-devices','Admin\ScheduleController@devices')->name('get_devices');
+    Route::post('set-schedule','Admin\ScheduleController@create')->name('set_schedule');
 });
 
 Route::get('login', 'LoginController@login_view')->name('login');

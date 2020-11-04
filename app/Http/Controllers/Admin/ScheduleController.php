@@ -21,13 +21,62 @@ class ScheduleController extends Controller
     public function index()
     {
         $zones = Zone::all();
-        $cities = City::all();
-        $branches = Branch::all();
-        $deviceGroups = DeviceGroup::all();
-        $devices = Device::all();
-        $deviceTemplateData = DeviceTemplateData::all();
-
+        $deviceTemplateData = DeviceTemplateData::with('device_templates')->get();
         return view('admin.schedule.index',
-            compact('zones','cities','branches','deviceGroups','devices','deviceTemplateData'));
+            compact('zones','deviceTemplateData'));
+    }
+    public function cities($zone_id){
+        $cities = City::where('zone_id', $zone_id)->get();
+        return json_encode($cities);
+    }
+    public function branches($city_id){
+        $branches = Branch::where('city_id', $city_id)->get();
+        return json_encode($branches);
+    }
+    public function deviceGroups($branch_id){
+        $deviceGroups = DeviceGroup::where('branch_id', $branch_id)->get();
+        return json_encode($deviceGroups);
+    }
+    public function devices(Request $request){
+        $orientation = $request->orientation;
+        $devices = [];
+        if($request->deviceGroup_id){
+           $devices = Device::where(['device_group_id' => $request->deviceGroup_id, 'device_orientation'=>$orientation] )->get();
+            return json_encode($devices);
+        }
+        if($request->branch_id){
+            $branch = Branch::where('id',$request->branch_id )->with(['devices' => function ($query) use ($orientation) { 
+                    $query->where('devices.device_orientation',  $orientation); 
+                }])->first();
+            return $branch->devices;
+        }
+        if($request->city_id){
+            $city = City::where('id',$request->city_id )->with(['branches.devices' => function ($query) use ($orientation) { 
+                    $query->where('devices.device_orientation',  $orientation); 
+                }])->first();
+             
+            foreach ($city->branches as $branch) {
+                foreach($branch->devices as $device){
+                    array_push($devices, $device);
+                }   
+            }
+            return json_encode($devices);
+        }else{
+            
+            $zone = Zone::where('id',$request->zone_id )->with(['branches.devices' => function ($query) use ($orientation) { 
+                    $query->where('devices.device_orientation',  $orientation); 
+                }])->first();
+            
+            foreach ($zone->branches as $branch) {
+                foreach($branch->devices as $device){
+                    array_push($devices, $device);
+                }   
+            }
+        return json_encode($devices);
+        }
+       
+    }
+    public function create(Request $request){
+        dd($request->all());
     }
 }

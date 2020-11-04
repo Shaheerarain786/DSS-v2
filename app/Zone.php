@@ -31,4 +31,8 @@ class Zone extends Model
     public function cities(){
         return $this->hasMany(City::class);
     }
+     public function branches()
+    {
+        return $this->hasManyThrough('App\Branch', 'App\City');
+    }
 }

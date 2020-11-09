@@ -6,7 +6,7 @@
     <li class="active"><a href="{{url('schedule')}}"> Scheduling</a></li>
 @endsection
 @section('content')
-<link rel="stylesheet" href="{{asset('admin-assets/plugins/datetime/dist/daterangepicker.min.css')}}">
+
     <style>
         #zonesDropDown {
             width: 100% !important;
@@ -31,24 +31,30 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-3" id="relationColumn">
+                                @if(session()->has("success"))
+                                    <div class="alert alert-success">
+                                        <button class="close" data-dismiss="alert"><i class="pci-cross pci-circle"></i></button>
+                                        <stong>{{session()->get("success")}}</stong>
+                                    </div>
+                                @endif
                                 <form action="{{route('set_schedule')}}" method="post" autocomplete="off">
                                     @csrf
-                                <select name="zone" id="zonesDropDown" required="">
+                                <select name="zone_id" id="zonesDropDown" required="">
                                     <option value=""></option>
                                     @foreach($zones as $zone)
                                         <option value="{{$zone->id}}">{{$zone->name}}</option>
                                     @endforeach
                                 </select>
                                 <br>
-                                <select name="city" id="citiesDropDown" disabled>
+                                <select name="city_id" id="citiesDropDown" disabled>
                                     
                                     
                                 </select>
                                 <br>
-                                <select name="branch" id="branchesDropDown" disabled>
+                                <select name="branch_id" id="branchesDropDown" disabled>
                                     
                                 </select>
-                                <select name="deviceGroup" id="deviceGroupsDropDown" disabled>
+                                <select name="deviceGroup_id" id="deviceGroupsDropDown" disabled>
                                     <option value=""></option>
                                     
                                 </select>
@@ -57,24 +63,29 @@
                                     <option value="portrait">Portrait</option>
                                     <option value="landscape">Landscape</option>
                                 </select>
-                                <select name="devices[]" id="devicesDropDown" multiple required="">
+                                <select name="devices[]" id="devicesDropDown" multiple >
                                     <option value=""></option>
                                     
                                 </select>
                                 
-                                <select id="deviceTemplates" name="deviceTemplate" style="width: 100%;" required="">
+                                <select id="deviceTemplates" required="" name="deviceTemplate" style="width: 100%;" >
                                     <option value=""></option>
                                     @foreach($deviceTemplateData as $deviceTemplate)
                                         <option value="{{$deviceTemplate->id}}" title="{{$deviceTemplate->device_templates->template_images}}">{{$deviceTemplate->ticker_text}}</option>
                                     @endforeach
                                 </select>
+                                <div class="form-group">
+                                    <input type='text' class="form-control" id='datetimepicker6' name="strart_time" required="" placeholder="Select Start date and time" />
+                                </div>
+                                     <div class="form-group">
+                                       
+                                       <input type='text' class="form-control" id='datetimepicker7' placeholder="Select end date and time" name="end_time" required="" />
+                                       </div>
+                                    <input type="submit" name="" class="btn btn-primary" style="width: 100%;" value="submit">
 
-                                <div class="form-group">
-                                    <input type="" name="datetime" placeholder="select datetime range" id="domid" class="form-control" required="">
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-primary"style="width: 100%;" type="submit">Submit</button>
-                                </div>
+                                 
+                               </div>
+                               
                                 </form>
                             </div>
                         </div>
@@ -85,7 +96,6 @@
     </div>
 @endsection
 @section('js')
-<script type="text/javascript" src="{{asset('admin-assets/plugins/datetime/dist/jquery.daterangepicker.min.js')}}"></script>
     <script>
         $("#zonesDropDown").select2({
             placeholder: "Select Zone",
@@ -237,15 +247,24 @@
            }
         }
     });
-    var configObject = {startOfWeek: 'monday',
-        separator : ' ~ ',
-        format: 'DD.MM.YYYY HH:mm',
-        autoClose: false,
-        time: {
-            enabled: true
-        }};
-    $('#domid').dateRangePicker(configObject);
+    
 </script>
-
+<script type="text/javascript">
+   $(function () {
+       $('#datetimepicker6').datetimepicker({
+        format: 'MM/DD/YYYY HH:mm'
+       });
+       $('#datetimepicker7').datetimepicker({
+   useCurrent: false, //Important! See issue #1075
+   format: 'MM/DD/YYYY HH:mm'
+   });
+       $("#datetimepicker6").on("dp.change", function (e) {
+           $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+       });
+       $("#datetimepicker7").on("dp.change", function (e) {
+           $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+       });
+   });
+</script>
 
 @endsection

@@ -16,8 +16,8 @@
 <link href="{{asset('admin-assets/plugins/jstree/themes/default/style.min.css')}}" rel="stylesheet">
 <link href="{{asset('admin-assets/plugins/css-loaders/css/css-loaders.css')}}" rel="stylesheet">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<link href="{{asset('admin-assets/plugins/x-editable/css/bootstrap-editable.css')}}" rel="stylesheet">
-<link href="{{asset('admin-assets/plugins/dropzone/dropzone.min.css')}}" rel="stylesheet">
+{{-- <link href="{{asset('admin-assets/plugins/x-editable/css/bootstrap-editable.css')}}" rel="stylesheet">
+ --}}<link href="{{asset('admin-assets/plugins/dropzone/dropzone.min.css')}}" rel="stylesheet">
 <link href="{{asset('admin-assets/css/demo/nifty-demo.min.css')}}" rel="stylesheet">
 <link href="{{asset('admin-assets/css/demo/nifty-demo-icons.min.css')}}" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet">

@@ -25,7 +25,7 @@ class Branch extends Model
     {
         return $this->hasMany(DeviceGroup::class);
     }
-     public function devices(){
+    /* public function devices(){
         return $this->hasManyThrough('App\Device', 'App\DeviceGroup');
-    }
+    }*/
 }

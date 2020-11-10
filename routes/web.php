@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('get-device-groups/{branch_id}','Admin\ScheduleController@deviceGroups')->name('get_device_groups');
     Route::get('get-devices','Admin\ScheduleController@devices')->name('get_devices');
     Route::post('set-schedule','Admin\ScheduleController@create')->name('set_schedule');
+    Route::get('schedule-devices', 'Admin\ScheduleController@scheduleDevices')->name('schedule-devices');
 });
 
 Route::get('login', 'LoginController@login_view')->name('login');

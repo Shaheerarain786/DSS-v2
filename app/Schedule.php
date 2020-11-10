@@ -8,12 +8,34 @@ class Schedule extends Model
 {
     protected $fillable = [
         'title',
+        'zone_id',
+        'city_id',
+        'branch_id',
+        'device_group_id',
         'start_time',
         'end_time',
-        'template_id',
+        'device_template_id',
         'device_id',
         
     ];
 
-    
+    public function zone(){
+
+    	return $this->belongsTo(Zone::class);
+    }
+    public function city(){
+    	return $this->belongsTo(City::class);	
+    }
+    public function branch(){
+    	return $this->belongsTo(Branch::class);	
+    }
+    public function deviceGroup(){
+    	return $this->belongsTo(DeviceGroup::class);	
+    }
+    public function device(){
+		return $this->belongsTo(Device::class);    	
+    }
+    public function deviceTemplate(){
+    	return $this->belongsTo(DeviceTemplates::class);	
+    }
 }

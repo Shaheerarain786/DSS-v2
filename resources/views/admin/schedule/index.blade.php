@@ -8,11 +8,11 @@
 @section('content')
 
     <style>
-        #zonesDropDown {
+        #zonesDropDown, #zonesDropDownFillter {
             width: 100% !important;
         }
 
-        #citiesDropDown, #branchesDropDown, #deviceGroupsDropDown, #orientationDropDown, #devicesDropDown, #deviceTemplateDropDown {
+        #citiesDropDown, #citiesDropDownFillter,#branchesDropDown, #branchesDropDownFillter, #deviceGroupsDropDownFillter, #deviceGroupsDropDown, #orientationDropDown, #devicesDropDown, #deviceTemplateDropDown {
             width: 100% !important;
             text-align: center;
         }
@@ -83,10 +83,52 @@
                                        </div>
                                     <input type="submit" name="" class="btn btn-primary" style="width: 100%;" value="submit">
 
-                                 
+                                 </form>
                                </div>
                                
-                                </form>
+                                 <div class="col-sm-9">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <select  id="zonesDropDownFillter" >
+                                                <option value=""></option>
+                                                @foreach($zones as $zone)
+                                                    <option value="{{$zone->id}}">{{$zone->name}}</option>
+                                                @endforeach
+                                            </select>
+                                
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <select  id="citiesDropDownFillter" disabled="" >
+                                                
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <select  id="branchesDropDownFillter" disabled >
+                                            </select>
+                                
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <select  id="deviceGroupsDropDownFillter" disabled>
+                                            </select>
+                                
+                                        </div>
+                                    </div>
+                                    <table class="table table-bordered" id="schedules">
+                                   <thead>
+                                      <tr>
+                                         <th>#</th>
+                                        <th>City</th>
+                                        <th>Branch Name</th>
+                                        <th>Device Group</th>
+                                        <th>Device</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Device Template</th>
+                                      </tr>
+                                   </thead>
+                                </table>
+
+                                 </div>
                             </div>
                         </div>
                     </div>
@@ -97,19 +139,19 @@
 @endsection
 @section('js')
     <script>
-        $("#zonesDropDown").select2({
+        $("#zonesDropDown, #zonesDropDownFillter").select2({
             placeholder: "Select Zone",
             allowClear: true
         });
-        $("#citiesDropDown").select2({
+        $("#citiesDropDown, #citiesDropDownFillter").select2({
             placeholder: "Select City",
             allowClear: true
         });
-        $("#branchesDropDown").select2({
+        $("#branchesDropDown, #branchesDropDownFillter").select2({
             placeholder: "Select Branch",
             allowClear: true
         });
-        $("#deviceGroupsDropDown").select2({
+        $("#deviceGroupsDropDown,#deviceGroupsDropDownFillter").select2({
             placeholder: "Select Device Group",
             allowClear: true
         });
@@ -252,12 +294,14 @@
 <script type="text/javascript">
    $(function () {
        $('#datetimepicker6').datetimepicker({
-        format: 'MM/DD/YYYY HH:mm'
+        format: 'MM/DD/YYYY HH:mm',
+        sideBySide: true,
        });
        $('#datetimepicker7').datetimepicker({
-   useCurrent: false, //Important! See issue #1075
-   format: 'MM/DD/YYYY HH:mm'
-   });
+           useCurrent: false,
+           format: 'MM/DD/YYYY HH:mm',
+           sideBySide: true,
+        });
        $("#datetimepicker6").on("dp.change", function (e) {
            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
        });
@@ -265,6 +309,108 @@
            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
        });
    });
+   
 </script>
+<script>
+    var oTable =    $('#schedules').DataTable({
+            processing: true,
+            serverSide: true,
+            searching: false, 
+           scrollY: true,
+            
+           
+           ajax: {
+            url: '{{ url('schedule-devices') }}',
+                data: function (d) {
+                    d.zone_id           = $('#zonesDropDownFillter').val();
+                    d.city_id           = $('#citiesDropDownFillter').val();
+                    d.branch_id         = $('#branchesDropDownFillter').val();
+                    d.device_group_id   = $('#deviceGroupsDropDownFillter').val();
+                }
+            },
+           columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'city_id', name: 'city_id' },
+                    { data: 'branch_id', name: 'branch_id' },
+                    { data: 'device_group_id', name: 'device_group_id' },
+                    { data: 'device_id', name: 'device_id' },
+                    { data: 'start_time', name: 'start_time' },
+                    { data: 'end_time', name: 'end_time' },
+                    { data: 'product_brand_logo', name: 'product_brand_logo' },
+                 ]
+        });
+     
+   $("#zonesDropDownFillter").change(function(){
+        
+        
+        var zone_id = $(this).val();
+            if(zone_id){
+                var url= "{{Route('get_cities', "zone_id")}}";
+                $.ajax({
+                        url:url.replace('zone_id', zone_id),
+                        type: "GET",
+                        dataType: "json",
+                        success:function(data){
+                            $('#citiesDropDownFillter').empty();
+                            $('#branchesDropDownFillter').empty().attr('disabled', true);
+                            $('#deviceGroupsDropDownFillter').empty().attr('disabled', true);
+                            $('#citiesDropDownFillter').removeAttr('disabled');
+                            $('#citiesDropDownFillter').append('<option value=""></option>');
+                            $.each(data, function(key,value){
+                               $('#citiesDropDownFillter').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+                            });
+                        }
+                });
+            }
+            oTable.draw();
+   });
+    $("#citiesDropDownFillter").change(function(){
+        oTable.draw();
+            var city_id = $(this).val();
+            if(city_id){
+                var url= "{{Route('get_brances', "city_id")}}";
+                $.ajax({
+                    url:url.replace('city_id', city_id),
+                    type: "GET",
+                    dataType: "json",
+                    success:function(data){
+                        $('#branchesDropDownFillter').empty();
+                        $('#deviceGroupsDropDownFillter').empty().attr('disabled', true);
+                        $('#branchesDropDownFillter').removeAttr('disabled');
+                        $('#branchesDropDownFillter').append('<option value=""></option>');
+                        
+                        $.each(data, function(key,value){
+                           $('#branchesDropDownFillter').append('<option value="'+ value.id +'">'+ value.branch_name +'</option>');
 
+                        });
+                    }
+                });
+            }
+        });
+    $("#branchesDropDownFillter").change(function(){
+            var branch_id = $(this).val();
+            if(branch_id){
+                var url= "{{Route('get_device_groups', "branch_id")}}";
+                $.ajax({
+                    url:url.replace('branch_id', branch_id),
+                    type: "GET",
+                    dataType: "json",
+                    success:function(data){
+                        $('#deviceGroupsDropDownFillter').empty();
+                        $('#deviceGroupsDropDownFillter').removeAttr('disabled');
+                        $('#deviceGroupsDropDownFillter').append('<option value=""></option>');
+                        
+                        $.each(data, function(key,value){
+                           $('#deviceGroupsDropDownFillter').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+
+                        });
+                    }
+                });
+            }
+            oTable.draw();
+        });
+     $("#deviceGroupsDropDownFillter").change(function(){
+        oTable.draw();
+     });
+  </script>
 @endsection

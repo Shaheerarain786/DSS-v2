@@ -16,12 +16,12 @@ use App\Schedule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Datatables;
 class ScheduleController extends Controller
 {
     public function index()
     {
-        $zones = Zone::with('branches.devices')->get();
+        $zones = Zone::all();
         $deviceTemplateData = DeviceTemplateData::with('device_templates')->get();
         return view('admin.schedule.index',
             compact('zones','deviceTemplateData'));
@@ -46,98 +46,73 @@ class ScheduleController extends Controller
             return json_encode($devices);
         }
         if($request->branch_id){
-            $branch = Branch::where('id',$request->branch_id )->with(['devices' => function ($query) use ($orientation) { 
-                    $query->where('devices.device_orientation',  $orientation); 
-                }])->first();
-            return $branch->devices;
+            $devices = Device::where(['branch_id' => $request->branch_id, 'device_orientation'=>$orientation] )->get();
+            return json_encode($devices);
         }
         if($request->city_id){
-            $city = City::where('id',$request->city_id )->with(['branches.devices' => function ($query) use ($orientation) { 
-                    $query->where('devices.device_orientation',  $orientation); 
-                }])->first();
-             
-            foreach ($city->branches as $branch) {
-                foreach($branch->devices as $device){
-                    array_push($devices, $device);
-                }   
-            }
+            $devices = Device::where(['city_id' => $request->city_id, 'device_orientation'=>$orientation] )->get();
             return json_encode($devices);
         }else{
             
-            $zone = Zone::where('id',$request->zone_id )->with(['branches.devices' => function ($query) use ($orientation) { 
-                    $query->where('devices.device_orientation',  $orientation); 
-                }])->first();
-            
-            foreach ($zone->branches as $branch) {
-                foreach($branch->devices as $device){
-                    array_push($devices, $device);
-                }   
-            }
-        return json_encode($devices);
+             $devices = Device::where(['zone_id' => $request->zone_id, 'device_orientation'=>$orientation] )->get();
+            return json_encode($devices);
+
         }
        
     }
     public function create(Request $request){
-        //dd($request->all());
+       // dd($request->all());
+        $orientation = $request->orientation;
+        $devices = [];
+            
         if($request->devices){
             foreach ($request->devices as  $device) {
                 $check = Schedule::where('device_id', $device)->where('start_time', '>=', $request->strart_time)->Where('end_time', '<=', $request->end_time)->first();
              
                 if(!$check){
+                    $d = Device::findOrFail($device);
                     Schedule::create([
+                        'zone_id'   => $d->zone_id,
+                        'city_id'   => $d->city_id,
+                        'branch_id' => $d->branch_id,
+                        'device_group_id'=> $d->device_group_id,
                         'device_id' => $device,
                         'start_time' => $request->strart_time,
                         'end_time' => $request->end_time,
-                        'template_id'=> $request->deviceTemplate
+                        'device_template_id'=> $request->deviceTemplate,
                        ]);   
                 }
                
             }
            
         }else{
-            $orientation = $request->orientation;
-            $devices = [];
             if($request->deviceGroup_id){
-               $devices = Device::where(['device_group_id' => $request->deviceGroup_id, 'device_orientation'=>$orientation] )->get();
-            
+               $devices = Device::where(['device_group_id'=> $request->deviceGroup_id, 'device_orientation' => $orientation])->get();
             }elseif($request->branch_id){
-                $branch = Branch::where('id',$request->branch_id )->with(['devices' => function ($query) use ($orientation) { 
-                    $query->where('devices.device_orientation',  $orientation); 
-                    }])->first();
-                $devices = $branch->devices;
+                $devices = Device::where(['branch_id'=> $request->branch_id, 'device_orientation' => $orientation])->get();
             }elseif($request->city_id){
-                $city = City::where('id',$request->city_id )->with(['branches.devices' => function ($query) use ($orientation) { 
-                        $query->where('devices.device_orientation',  $orientation); 
-                    }])->first();
-                 
-                foreach ($city->branches as $branch) {
-                    foreach($branch->devices as $device){
-                        array_push($devices, $device);
-                    }   
-                }
+
+                $devices = Device::where(['city_id'=> $request->city_id, 'device_orientation' => $orientation])->get();
             
             }else{
-                
-                $zone = Zone::where('id',$request->zone_id )->with(['branches.devices' => function ($query) use ($orientation) { 
-                        $query->where('devices.device_orientation',  $orientation); 
-                    }])->first();
-                
-                foreach ($zone->branches as $branch) {
-                    foreach($branch->devices as $device){
-                        array_push($devices, $device);
-                    }   
-                }
+
+                $devices = Device::where(['zone_id'=> $request->zone_id, 'device_orientation' => $orientation])->get();
             
             }
             foreach ($devices as  $device) {
                 $check = Schedule::where('device_id', $device->id)->where('start_time', '>=', $request->strart_time)->Where('end_time', '<=', $request->end_time)->first();
              
                 if(!$check){
+                    $d = Device::findOrFail($device->id);
                     Schedule::create([
+                        'zone_id'   => $d->zone_id,
+                        'city_id'   => $d->city_id,
+                        'branch_id' => $d->branch_id,
+                        'device_group_id'=> $d->device_group_id,
                         'device_id' => $device->id,
                         'start_time' => $request->strart_time,
                         'end_time' => $request->end_time,
-                        'template_id'=> $request->deviceTemplate
+                        'device_template_id'=> $request->deviceTemplate,
                        ]);   
                 }
                
@@ -147,4 +122,42 @@ class ScheduleController extends Controller
         return redirect('schedule')->with("success","Scheudle Created successfully");
 
     }
+    public function scheduleDevices(Request $request){
+        if($request->device_group_id){
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplate'])->where('device_group_id', $request->device_group_id)->get();   
+        }elseif($request->branch_id){
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplate'])->where('branch_id', $request->branch_id)->get();
+        }elseif($request->city_id){
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplate'])->where('city_id', $request->city_id)->get();
+        }elseif($request->zone_id){
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplate'])->where('zone_id', $request->zone_id)->get();
+        }else{
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplate'])->get();   
+        }
+         
+
+         return  datatables()->of($sceduleDevices)
+                        ->editColumn('city_id', function(Schedule $data){
+                            return $data->city->name;
+                        })
+                        ->editColumn('branch_id', function(Schedule $data){
+                            return $data->branch->branch_name;
+                        })
+                        ->editColumn('device_group_id', function(Schedule $data){
+                            return $data->deviceGroup->name;
+                        })
+                         ->editColumn('device_id', function(Schedule $data){
+                            return $data->device->device_name;
+                        })
+                          ->editColumn('device_template_id', function(Schedule $data){
+                            return '<img src='.$data->deviceTemplate->template_images.' border="0" width="40" class="img-rounded" align="center" />';
+
+                        })
+                          ->addColumn('product_brand_logo', function (Schedule $data) { 
+                            $imageUrl = $data->deviceTemplate->template_images;
+                        return '<img src="'. $imageUrl.'" border="0" width="40" class="img-rounded" align="center" />' ." ".$data->deviceTemplate->name;
+                            
+                        })->rawColumns(['product_brand_logo'])
+                        ->make(true);
+     }
 }

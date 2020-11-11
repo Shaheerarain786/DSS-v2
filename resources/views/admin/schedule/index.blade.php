@@ -37,6 +37,12 @@
                                         <stong>{{session()->get("success")}}</stong>
                                     </div>
                                 @endif
+                                @if(session()->has("error"))
+                                    <div class="alert alert-success">
+                                        <button class="close" data-dismiss="alert"><i class="pci-cross pci-circle"></i></button>
+                                        <stong>{{session()->get("error")}}</stong>
+                                    </div>
+                                @endif
                                 <form action="{{route('set_schedule')}}" method="post" autocomplete="off">
                                     @csrf
                                 <select name="zone_id" id="zonesDropDown" required="">
@@ -336,7 +342,7 @@
                     { data: 'device_id', name: 'device_id' },
                     { data: 'start_time', name: 'start_time' },
                     { data: 'end_time', name: 'end_time' },
-                    { data: 'product_brand_logo', name: 'product_brand_logo' },
+                    { data: 'device_template', name: 'device_template' },
                  ]
         });
      
@@ -351,21 +357,22 @@
                         type: "GET",
                         dataType: "json",
                         success:function(data){
-                            $('#citiesDropDownFillter').empty();
-                            $('#branchesDropDownFillter').empty().attr('disabled', true);
-                            $('#deviceGroupsDropDownFillter').empty().attr('disabled', true);
+                            $('#citiesDropDownFillter').empty().val('');
+                            $('#branchesDropDownFillter').empty().attr('disabled', true).val('');
+                            $('#deviceGroupsDropDownFillter').empty().attr('disabled', true).val('');
                             $('#citiesDropDownFillter').removeAttr('disabled');
                             $('#citiesDropDownFillter').append('<option value=""></option>');
+                            oTable.draw();
                             $.each(data, function(key,value){
                                $('#citiesDropDownFillter').append('<option value="'+ value.id +'">'+ value.name +'</option>');
                             });
                         }
                 });
             }
-            oTable.draw();
+            
    });
     $("#citiesDropDownFillter").change(function(){
-        oTable.draw();
+       
             var city_id = $(this).val();
             if(city_id){
                 var url= "{{Route('get_brances', "city_id")}}";
@@ -374,11 +381,11 @@
                     type: "GET",
                     dataType: "json",
                     success:function(data){
-                        $('#branchesDropDownFillter').empty();
-                        $('#deviceGroupsDropDownFillter').empty().attr('disabled', true);
+                        $('#branchesDropDownFillter').empty().val('');
+                        $('#deviceGroupsDropDownFillter').empty().attr('disabled', true).val();
                         $('#branchesDropDownFillter').removeAttr('disabled');
                         $('#branchesDropDownFillter').append('<option value=""></option>');
-                        
+                         oTable.draw();
                         $.each(data, function(key,value){
                            $('#branchesDropDownFillter').append('<option value="'+ value.id +'">'+ value.branch_name +'</option>');
 
@@ -396,10 +403,10 @@
                     type: "GET",
                     dataType: "json",
                     success:function(data){
-                        $('#deviceGroupsDropDownFillter').empty();
+                        $('#deviceGroupsDropDownFillter').empty().val('');
                         $('#deviceGroupsDropDownFillter').removeAttr('disabled');
                         $('#deviceGroupsDropDownFillter').append('<option value=""></option>');
-                        
+                        oTable.draw();
                         $.each(data, function(key,value){
                            $('#deviceGroupsDropDownFillter').append('<option value="'+ value.id +'">'+ value.name +'</option>');
 
@@ -407,7 +414,7 @@
                     }
                 });
             }
-            oTable.draw();
+            
         });
      $("#deviceGroupsDropDownFillter").change(function(){
         oTable.draw();

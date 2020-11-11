@@ -20,7 +20,7 @@ class CreateSchedulesTable extends Migration
             $table->bigInteger('branch_id');
             $table->bigInteger('device_group_id');
             $table->bigInteger('device_id');
-            $table->bigInteger('device_template_id');
+            $table->bigInteger('device_template_data_id');
             $table->string('start_time');
             $table->string('end_time');
             $table->timestamps();

@@ -21,6 +21,8 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::get('schedule', 'Admin\ScheduleController@index')->name('schedule');
+    Route::get('schedule-view', 'Admin\ScheduleController@view')->name('schedule-view');
+    Route::get('schedule-edit/{id}', 'Admin\ScheduleController@edit')->name('schedule-view');
     Route::post('ajax-data', 'Admin\ScheduleController@schedule_post')->name('ajax-data');
     Route::post('ajax-data-update', 'Admin\ScheduleController@schedule_post_update')->name('ajax-data-update');
     Route::post('ajax-data-delete', 'Admin\ScheduleController@schedule_post_delete')->name('ajax-data-delete');
@@ -47,6 +49,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('get-device-groups/{branch_id}','Admin\ScheduleController@deviceGroups')->name('get_device_groups');
     Route::get('get-devices','Admin\ScheduleController@devices')->name('get_devices');
     Route::post('set-schedule','Admin\ScheduleController@create')->name('set_schedule');
+    Route::post('update-schedule/{id}','Admin\ScheduleController@update')->name('update_schedule');
+
     Route::get('schedule-devices', 'Admin\ScheduleController@scheduleDevices')->name('schedule-devices');
 });
 

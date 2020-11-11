@@ -79,7 +79,7 @@ class ScheduleController extends Controller
                         'device_id' => $device,
                         'start_time' => $request->strart_time,
                         'end_time' => $request->end_time,
-                        'device_template_id'=> $request->deviceTemplate,
+                        'device_template_data_id'=> $request->deviceTemplate,
                        ]);   
                 }
                
@@ -112,7 +112,7 @@ class ScheduleController extends Controller
                         'device_id' => $device->id,
                         'start_time' => $request->strart_time,
                         'end_time' => $request->end_time,
-                        'device_template_id'=> $request->deviceTemplate,
+                        'device_template_data_id'=> $request->deviceTemplate,
                        ]);   
                 }
                
@@ -122,21 +122,50 @@ class ScheduleController extends Controller
         return redirect('schedule')->with("success","Scheudle Created successfully");
 
     }
+    public function view(){
+        $zones = Zone::all();
+        return view('admin.schedule.view', compact('zones'));
+    }
+    public function edit ($id){
+       
+       $scheduledDevice = Schedule::with('device')->findOrFail($id);
+       $deviceTemplateData = DeviceTemplateData::with('device_templates')->get();
+       return view('admin.schedule.edit', compact('scheduledDevice', 'deviceTemplateData'));
+    }
+    public function update(Request $request, $id){
+
+             
+        $scheduledDevice = Schedule::findOrFail($id);
+        
+        $check = Schedule::where('device_id', $scheduledDevice->device_id)->where('start_time', '>=', $request->start_time)->Where('end_time', '<=', $request->end_time)->whereNotIn('id', [$id])->first();
+        
+        if(!$check){
+            $scheduledDevice->device_template_data_id = $request->deviceTemplate;
+            $scheduledDevice->start_time = $request->start_time;
+            $scheduledDevice->end_time  = $request->end_time;
+            $scheduledDevice->update();
+            return redirect('schedule-view')->with("success","Scheudle Updated successfully");
+        }else{
+            return redirect('schedule-view')->with("error","Scheudle Not Updated! Because this device has already sceduled during this time slot");
+        }
+        
+    }
     public function scheduleDevices(Request $request){
         if($request->device_group_id){
-            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplate'])->where('device_group_id', $request->device_group_id)->get();   
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where('device_group_id', $request->device_group_id)->get();   
         }elseif($request->branch_id){
-            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplate'])->where('branch_id', $request->branch_id)->get();
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where('branch_id', $request->branch_id)->get();
         }elseif($request->city_id){
-            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplate'])->where('city_id', $request->city_id)->get();
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where('city_id', $request->city_id)->get();
         }elseif($request->zone_id){
-            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplate'])->where('zone_id', $request->zone_id)->get();
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where('zone_id', $request->zone_id)->get();
         }else{
-            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplate'])->get();   
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->get();   
         }
          
 
          return  datatables()->of($sceduleDevices)
+                        ->addIndexColumn()
                         ->editColumn('city_id', function(Schedule $data){
                             return $data->city->name;
                         })
@@ -149,15 +178,17 @@ class ScheduleController extends Controller
                          ->editColumn('device_id', function(Schedule $data){
                             return $data->device->device_name;
                         })
-                          ->editColumn('device_template_id', function(Schedule $data){
-                            return '<img src='.$data->deviceTemplate->template_images.' border="0" width="40" class="img-rounded" align="center" />';
-
-                        })
-                          ->addColumn('product_brand_logo', function (Schedule $data) { 
-                            $imageUrl = $data->deviceTemplate->template_images;
-                        return '<img src="'. $imageUrl.'" border="0" width="40" class="img-rounded" align="center" />' ." ".$data->deviceTemplate->name;
+                         
+                          ->addColumn('device_template', function (Schedule $data) { 
+                            $imageUrl = $data->deviceTemplateData->device_templates->template_images;
+                        return '<img src="'.asset( $imageUrl).'" border="0" width="40" class="img-rounded" align="center" />' ." ".$data->deviceTemplateData->ticker_text;
                             
-                        })->rawColumns(['product_brand_logo'])
+                        })
+                          ->addColumn('edit', function (Schedule $data) { 
+                            $url = url('/schedule-edit/'.$data->id);
+                        return '<a href="'.$url.'" class="btn btn-success"><i class="fa fa-edit"></i></a>';
+                            
+                        })->rawColumns(['device_template', 'edit'])
                         ->make(true);
      }
 }

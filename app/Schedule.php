@@ -14,7 +14,7 @@ class Schedule extends Model
         'device_group_id',
         'start_time',
         'end_time',
-        'device_template_id',
+        'device_template_data_id',
         'device_id',
         
     ];
@@ -35,7 +35,7 @@ class Schedule extends Model
     public function device(){
 		return $this->belongsTo(Device::class);    	
     }
-    public function deviceTemplate(){
-    	return $this->belongsTo(DeviceTemplates::class);	
+    public function deviceTemplateData(){
+    	return $this->belongsTo(DeviceTemplateData::class);	
     }
 }

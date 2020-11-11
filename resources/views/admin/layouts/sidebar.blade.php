@@ -121,11 +121,17 @@
                                 <span class="menu-title">Device Templates</span>
                             </a>
                         </li>
-                        <li class="{{Request::is('schedule') || Request::is('schedule/*') ? 'active-sub' : ''}}">
+                        <li class="{{Request::is('schedule') || Request::is('schedule/*') || Request::is('schedule-view')? 'active-sub' : ''}}">
                             <a href="{{url('/schedule')}}">
                                 <i class="fa fa-calendar-alt"></i>
                                 <span class="menu-title">Schedule</span>
+                                <i class="arrow"></i>
                             </a>
+                            <ul class="collapse">
+                                <li><a href="{{url('/schedule')}}">Schedule</a></li>
+                                <li><a href="{{url('/schedule-view')}}">View Schedule</a></li>
+                                
+                            </ul>
                         </li>
                         <li class="{{Request::is('relations') || Request::is('relations/*') ? 'active-sub' : ''}}">
                             <a href="{{url('/relations')}}">

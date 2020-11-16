@@ -61,5 +61,69 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-bordered">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Logs</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-bordered">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Running Schedules</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th> #</th>
+                                                    <th>City</th>
+                                                    <th>Branch Name</th>
+                                                    <th>Device Group</th>
+                                                    <th>Device</th>
+                                                    <th>Device Template</th>
+                                                </tr>
+
+                                            </thead>
+                                            <tbody>
+                                             @php
+                                                $count = 0;
+                                             @endphp
+                                              @foreach($runningSchedules as $device)
+                                                  @php
+                                                      $count++;
+                                                  @endphp
+                                                <tr>
+                                                    <td>{{$count}}</td>
+                                                    <td>{{$device->city->name}}</td>
+                                                    <td>{{$device->branch->branch_name}}</td>
+                                                    <td>{{$device->deviceGroup->name}}</td>
+                                                    <td>{{$device->device->device_name}}</td>
+                                                    <td><img src="{{asset($device->deviceTemplateData->device_templates->template_images)}}" border="0" width="40" class="img-rounded" align="center" />
+                                                    <br>{{$device->deviceTemplateData->ticker_text}}</td>
+                                                </tr>
+                                              @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

@@ -14,7 +14,7 @@ class CreateSchedulesTable extends Migration
     public function up()
     {
         Schema::create('schedules', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->bigInteger('zone_id');
             $table->bigInteger('city_id');
             $table->bigInteger('branch_id');
@@ -23,6 +23,8 @@ class CreateSchedulesTable extends Migration
             $table->bigInteger('device_template_data_id');
             $table->string('start_time');
             $table->string('end_time');
+            $table->string('assets_download_time');
+            $table->tinyInteger('is_deleted')->comment('0 = no, 1 = yes')->default(0);
             $table->timestamps();
         });
     }

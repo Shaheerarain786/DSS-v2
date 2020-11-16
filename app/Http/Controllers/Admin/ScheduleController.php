@@ -22,7 +22,7 @@ class ScheduleController extends Controller
     public function index()
     {
         $zones = Zone::all();
-        $deviceTemplateData = DeviceTemplateData::with('device_templates')->get();
+        $deviceTemplateData = DeviceTemplateData::with('device_templates')->where('is_deleted', 0)->get();
         return view('admin.schedule.index',
             compact('zones','deviceTemplateData'));
     }
@@ -53,22 +53,22 @@ class ScheduleController extends Controller
             $devices = Device::where(['city_id' => $request->city_id, 'device_orientation'=>$orientation] )->get();
             return json_encode($devices);
         }else{
-            
+
              $devices = Device::where(['zone_id' => $request->zone_id, 'device_orientation'=>$orientation] )->get();
             return json_encode($devices);
 
         }
-       
+
     }
     public function create(Request $request){
        // dd($request->all());
         $orientation = $request->orientation;
         $devices = [];
-            
+
         if($request->devices){
             foreach ($request->devices as  $device) {
-                $check = Schedule::where('device_id', $device)->where('start_time', '>=', $request->strart_time)->Where('end_time', '<=', $request->end_time)->first();
-             
+                $check = Schedule::where('device_id', $device)->where('start_time', '>=', $request->start_time)->Where('end_time', '<=', $request->end_time)->first();
+
                 if(!$check){
                     $d = Device::findOrFail($device);
                     Schedule::create([
@@ -77,14 +77,15 @@ class ScheduleController extends Controller
                         'branch_id' => $d->branch_id,
                         'device_group_id'=> $d->device_group_id,
                         'device_id' => $device,
-                        'start_time' => $request->strart_time,
+                        'start_time' => $request->start_time,
+                        'assets_download_time' => $request->assets_download_time,
                         'end_time' => $request->end_time,
                         'device_template_data_id'=> $request->deviceTemplate,
-                       ]);   
+                       ]);
                 }
-               
+
             }
-           
+
         }else{
             if($request->deviceGroup_id){
                $devices = Device::where(['device_group_id'=> $request->deviceGroup_id, 'device_orientation' => $orientation])->get();
@@ -93,15 +94,15 @@ class ScheduleController extends Controller
             }elseif($request->city_id){
 
                 $devices = Device::where(['city_id'=> $request->city_id, 'device_orientation' => $orientation])->get();
-            
+
             }else{
 
                 $devices = Device::where(['zone_id'=> $request->zone_id, 'device_orientation' => $orientation])->get();
-            
+
             }
             foreach ($devices as  $device) {
-                $check = Schedule::where('device_id', $device->id)->where('start_time', '>=', $request->strart_time)->Where('end_time', '<=', $request->end_time)->first();
-             
+                $check = Schedule::where('device_id', $device->id)->where('start_time', '>=', $request->start_time)->Where('end_time', '<=', $request->end_time)->first();
+
                 if(!$check){
                     $d = Device::findOrFail($device->id);
                     Schedule::create([
@@ -110,14 +111,15 @@ class ScheduleController extends Controller
                         'branch_id' => $d->branch_id,
                         'device_group_id'=> $d->device_group_id,
                         'device_id' => $device->id,
-                        'start_time' => $request->strart_time,
+                        'start_time' => $request->start_time,
                         'end_time' => $request->end_time,
                         'device_template_data_id'=> $request->deviceTemplate,
-                       ]);   
+                        'assets_download_time' => $request->assets_download_time,
+                       ]);
                 }
-               
+
             }
-           
+
         }
         return redirect('schedule')->with("success","Scheudle Created successfully");
 
@@ -127,42 +129,49 @@ class ScheduleController extends Controller
         return view('admin.schedule.view', compact('zones'));
     }
     public function edit ($id){
-       
+
        $scheduledDevice = Schedule::with('device')->findOrFail($id);
        $deviceTemplateData = DeviceTemplateData::with('device_templates')->get();
        return view('admin.schedule.edit', compact('scheduledDevice', 'deviceTemplateData'));
     }
     public function update(Request $request, $id){
 
-             
+
         $scheduledDevice = Schedule::findOrFail($id);
-        
+
         $check = Schedule::where('device_id', $scheduledDevice->device_id)->where('start_time', '>=', $request->start_time)->Where('end_time', '<=', $request->end_time)->whereNotIn('id', [$id])->first();
-        
+
         if(!$check){
             $scheduledDevice->device_template_data_id = $request->deviceTemplate;
             $scheduledDevice->start_time = $request->start_time;
             $scheduledDevice->end_time  = $request->end_time;
+            $scheduledDevice->assets_download_time  = $request->assets_download_time;
             $scheduledDevice->update();
-            return redirect('schedule-view')->with("success","Scheudle Updated successfully");
+            return redirect('schedule-view')->with("success","Schedule Updated successfully");
         }else{
-            return redirect('schedule-view')->with("error","Scheudle Not Updated! Because this device has already sceduled during this time slot");
+            return redirect('schedule-view')->with("error","Schedule Not Updated! Because this device has already scheduled during this time slot");
         }
-        
+
+    }
+    public function delete($id){
+        $schedule = Schedule::findOrFail($id);
+        $schedule->is_deleted = 1;
+        $schedule->update();
+        return redirect('schedule-view')->with("error","Schedule delete successfully");
     }
     public function scheduleDevices(Request $request){
         if($request->device_group_id){
-            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where('device_group_id', $request->device_group_id)->get();   
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where(['device_group_id' => $request->device_group_id, 'is_deleted' => 0])->get();
         }elseif($request->branch_id){
-            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where('branch_id', $request->branch_id)->get();
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where(['branch_id'=> $request->branch_id,'is_deleted' => 0])->get();
         }elseif($request->city_id){
-            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where('city_id', $request->city_id)->get();
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where(['city_id'=> $request->city_id,'is_deleted' => 0])->get();
         }elseif($request->zone_id){
-            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where('zone_id', $request->zone_id)->get();
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where(['zone_id'=> $request->zone_id, 'is_deleted' => 0])->get();
         }else{
-            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->get();   
+            $sceduleDevices = Schedule::with(['zone', 'city', 'branch', 'deviceGroup', 'device', 'deviceTemplateData.device_templates'])->where('is_deleted', 0)->get();
         }
-         
+
 
          return  datatables()->of($sceduleDevices)
                         ->addIndexColumn()
@@ -178,17 +187,22 @@ class ScheduleController extends Controller
                          ->editColumn('device_id', function(Schedule $data){
                             return $data->device->device_name;
                         })
-                         
-                          ->addColumn('device_template', function (Schedule $data) { 
+
+                          ->addColumn('device_template', function (Schedule $data) {
                             $imageUrl = $data->deviceTemplateData->device_templates->template_images;
                         return '<img src="'.asset( $imageUrl).'" border="0" width="40" class="img-rounded" align="center" />' ." ".$data->deviceTemplateData->ticker_text;
-                            
+
                         })
-                          ->addColumn('edit', function (Schedule $data) { 
+                        ->addColumn('edit', function (Schedule $data) {
                             $url = url('/schedule-edit/'.$data->id);
-                        return '<a href="'.$url.'" class="btn btn-success"><i class="fa fa-edit"></i></a>';
-                            
-                        })->rawColumns(['device_template', 'edit'])
+                            return '<a href="'.$url.'" class="btn btn-success"><i class="fa fa-edit"></i></a>';
+
+                        })
+                     ->addColumn('delete', function (Schedule $data) {
+                         return '<button class="btn btn-danger btn-sm btn-circle" onclick="deleteSchedule('.$data->id.')" ><i class="fas fa-trash"></i></button>';
+
+                     })
+                        ->rawColumns(['device_template', 'edit', 'delete'])
                         ->make(true);
      }
 }

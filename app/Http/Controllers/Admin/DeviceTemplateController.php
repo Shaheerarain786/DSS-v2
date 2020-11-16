@@ -17,7 +17,7 @@ class DeviceTemplateController extends Controller
 {
     public function index()
     {
-        $templates = DeviceTemplateData::with(['device_templates', 'template_assets'])->get();
+        $templates = DeviceTemplateData::with(['device_templates', 'template_assets'])->where('is_deleted' , 0)->get();
 
         foreach ($templates as $template) {
             $template->images = DeviceTemplateAsssets::query()
@@ -120,9 +120,9 @@ class DeviceTemplateController extends Controller
     {
         $template_data = DeviceTemplateData::query()->findOrFail($id);
 
-        $template_data->template_assets()->delete();
+        $template_data->is_deleted = 1;
 
-        $template_data->delete();
+        $template_data->update();
 
         return redirect('device-templates')->with('success','Template and Template Data deleted successfully');
     }

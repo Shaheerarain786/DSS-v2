@@ -51,12 +51,16 @@
                                     @endforeach
                                 </select>
                                 <div class="form-group">
-                                    <input type='text' class="form-control" id='datetimepicker6'  name="start_time" required="" placeholder="Select Start date and time" value="{{$scheduledDevice->start_time}}" />
+                                    <input type='text' class="form-control" id='start_time'  name="start_time" required="" placeholder="Select Start date and time" value="{{$scheduledDevice->start_time}}" />
                                 </div>
                                      <div class="form-group">
                                        
-                                       <input type='text' class="form-control" id='datetimepicker7' placeholder="Select end date and time" value="{{$scheduledDevice->end_time}}" name="end_time" required="" />
+                                       <input type='text' class="form-control" id='end_time' placeholder="Select end date and time" value="{{$scheduledDevice->end_time}}" name="end_time" required="" />
                                        </div>
+
+                                  <div class="form-group">
+                                    <input type='text' class="form-control" id='assetsDownloadTime' placeholder="Select assets download time" name="assets_download_time" value="{{$scheduledDevice->assets_download_time}}" required="" />
+                                  </div>
                                     <input type="submit" name="" class="btn btn-primary" style="width: 100%;" value="submit">
 
                                  </form>
@@ -101,22 +105,22 @@
 </script>
 <script type="text/javascript">
    $(function () {
-       $('#datetimepicker6').datetimepicker({
-        format: 'MM/DD/YYYY HH:mm',
+       $('#start_time, #assetsDownloadTime').datetimepicker({
+        format: 'DD-MM-YYYY HH:mm',
         sideBySide: true,
        });
-       $('#datetimepicker7').datetimepicker({
+       $('#end_time').datetimepicker({
            useCurrent: false,
-           format: 'MM/DD/YYYY HH:mm',
+           format: 'DD-MM-YYYY HH:mm',
            sideBySide: true,
         });
-       $("#datetimepicker6").on("dp.change", function (e) {
-           $('#datetimepicker7').val('');
-           $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+       $("#start_time").on("dp.change", function (e) {
+           $('#end_time, #assetsDownloadTime').val('');
+           $('#end_time').data("DateTimePicker").minDate(e.date);
 
        });
-       $("#datetimepicker7").on("dp.change", function (e) {
-           $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+       $("#end_time").on("dp.change", function (e) {
+           $('#start_time').data("DateTimePicker").maxDate(e.date);
        });
    });
    

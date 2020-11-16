@@ -16,6 +16,7 @@ class Schedule extends Model
         'end_time',
         'device_template_data_id',
         'device_id',
+        'assets_download_time'
         
     ];
 

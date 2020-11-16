@@ -36,31 +36,35 @@ $(document).ready(function () {
                 data_array.push(id)
             }
         });
+        if(data_array.length > 0){
+            if (confirm("Are you sure you want to delete")) {
+                var route = $("#action").val();
+                $.ajax({
+                    type: "POST",
+                    url: route,
+                    data: {
+                        zones: data_array
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        $("#message strong").text(response.message);
+                        $("#message").show();
 
-        if (confirm("Are you sure you want to delete")) {
-            var route = $("#action").val();
-            $.ajax({
-                type: "POST",
-                url: route,
-                data: {
-                    zones: data_array
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function (response) {
-                    $("#message strong").text(response.message);
-                    $("#message").show();
-
-                    setTimeout(function () {
-                        window.location.reload()
-                    }, 2000)
-                },
-                error: function (message) {
-                    console.log(message);
-                }
-            })
+                        setTimeout(function () {
+                            window.location.reload()
+                        }, 2000)
+                    },
+                    error: function (message) {
+                        console.log(message);
+                    }
+                })
+            }
+        }else{
+            alert('Please select atleast 1 zone to delete');
         }
+        
     })
 
     // $("#overlay").fadeOut(2000, function () {

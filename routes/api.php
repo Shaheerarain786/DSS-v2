@@ -25,3 +25,6 @@ Route::get('categories','API\CategoriesController@categories')->name('categories
 Route::get('device-templates/{id}','API\DeviceTemplatesController@device_templates')->name('device_templates');
 Route::get('log','API\DeviceTemplatesController@log')->name('log');
 Route::post('update-device','API\DevicesController@update_device');
+Route::get('get-schedule-single','API\ScheduleController@getSingleSchedule')->name('single-schedule');
+
+Route::get('get-schedules-all','API\ScheduleController@getAllSchedules')->name('all-schedules');

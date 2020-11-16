@@ -19,6 +19,7 @@ class CreateDeviceTemplateDataTable extends Migration
             $table->string('ticker_text');
             $table->integer('organization_id')->nullable();
             $table->integer('template_id');
+            $table->tinyInteger('is_deleted')->comment('0 = no, 1 = yes')->default(0);
             $table->timestamps();
         });
     }

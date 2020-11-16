@@ -41,17 +41,19 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('relations','Admin\RelationsController@index');
 
     Route::post('logout', 'LoginController@logout')->name('logout');
+    Route::get('profile', 'ProfileController@index')->name('profile');
     Route::post('ajax-delete-zones','Admin\ZoneController@ajax_delete_zones')->name('ajax-delete-zones');
     Route::post('ajax-next-device-template-setting','Admin\DeviceTemplateController@next_step')->name('next_step');
 
      Route::get('get-cities/{zone_id}','Admin\ScheduleController@cities')->name('get_cities');
-    Route::get('get-brances/{city_id}','Admin\ScheduleController@branches')->name('get_brances');
+    Route::get('get-branches/{city_id}','Admin\ScheduleController@branches')->name('get_brances');
     Route::get('get-device-groups/{branch_id}','Admin\ScheduleController@deviceGroups')->name('get_device_groups');
     Route::get('get-devices','Admin\ScheduleController@devices')->name('get_devices');
     Route::post('set-schedule','Admin\ScheduleController@create')->name('set_schedule');
     Route::post('update-schedule/{id}','Admin\ScheduleController@update')->name('update_schedule');
 
     Route::get('schedule-devices', 'Admin\ScheduleController@scheduleDevices')->name('schedule-devices');
+    Route::put('schedule/{id}', 'Admin\ScheduleController@delete')->name('delete-schedule');
 });
 
 Route::get('login', 'LoginController@login_view')->name('login');

@@ -20,26 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0f048c3d-b59a-447d-a5c3-e26d89643e04" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/laravel-plugin.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/admin/profile.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/DeviceTemplateController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/DeviceTemplateController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/ScheduleController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/ScheduleController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DashboardController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Schedule.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Schedule.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_05_18_071805_create_device_templates_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_05_18_071805_create_device_templates_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_10_04_081550_create_device_template_data_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_10_04_081550_create_device_template_data_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_11_09_080124_create_schedules_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_11_09_080124_create_schedules_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/admin-assets/scripts/zones.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/admin-assets/scripts/zones.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/admin/dashboard.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/dashboard.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/layouts/header.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/layouts/header.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/schedule/edit.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/schedule/edit.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/schedule/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/schedule/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/admin/schedule/view.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/schedule/view.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/layouts/scripts.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/layouts/scripts.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +31,9 @@
   </component>
   <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
-    <execution />
+    <execution>
+      <executable />
+    </execution>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -185,17 +170,17 @@
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\app\Services" />
-      <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\resources\views\admin\relations" />
-      <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\resources\views\admin\users" />
-      <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\resources\views\admin\device_templates\modals" />
-      <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\public\uploads\photos" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\public" />
       <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\public\admin-assets\plugins\dropzone" />
       <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\public\admin-assets" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\swan_\Documents\GitHub\DSS-v2" />
+      <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\app\Services" />
+      <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\resources\views\admin\relations" />
+      <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\resources\views\admin\users" />
+      <recent name="C:\Users\swan_\Dropbox\Swantech_Solutions\DSS\resources\views\admin\device_templates\modals" />
     </key>
   </component>
   <component name="RunManager">
@@ -204,7 +189,7 @@
       <method v="2" />
     </configuration>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -338,7 +323,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -399,13 +386,13 @@
     <state x="-1389" y="238" key="run.anything.popup/0.0.1536.824/-1920.2.1920.1040@-1920.2.1920.1040" timestamp="1601969573784" />
     <state x="2451" y="236" key="run.anything.popup/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601206601376" />
     <state x="425" y="187" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1599998208355" />
-    <state x="383" y="128" width="672" height="600" key="search.everywhere.popup" timestamp="1605425451144">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1605536987546">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="383" y="128" width="672" height="600" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1605425451144" />
     <state x="-1381" y="185" width="840" height="856" key="search.everywhere.popup/0.0.1536.824/-1920.2.1920.1040@-1920.2.1920.1040" timestamp="1602059972380" />
     <state x="431" y="145" width="672" height="679" key="search.everywhere.popup/0.0.1536.824/-1920.2.1920.1040@0.0.1536.824" timestamp="1601393252576" />
     <state x="2459" y="183" width="840" height="856" key="search.everywhere.popup/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1601207046531" />
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1603189312467" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1605536987546" />
   </component>
 </project>

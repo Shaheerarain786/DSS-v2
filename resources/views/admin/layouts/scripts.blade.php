@@ -1,6 +1,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script src="{{asset('admin-assets/js/nifty.min.js')}}"></script>
+{{--<script src="{{asset('admin-assets/js/nifty.min.js')}}"></script>--}}
 {{--<script src="{{asset('admin-assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js')}}"></script>--}}
 {{--<script src="{{asset('admin-assets/js/demo/form-text-editor.js')}}"></script>--}}
 {{--<script src="{{asset('admin-assets/plugins/summernote/summernote.min.js')}}"></script>--}}
